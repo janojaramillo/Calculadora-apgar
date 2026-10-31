@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora APGAR Neonatal</title>
+
+<!-- ── PWA Manifest (inline) ── -->
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Calculadora%20APGAR%20Neonatal%22%2C%22short_name%22%3A%22APGAR%22%2C%22description%22%3A%22Evaluaci%C3%B3n%20del%20Reci%C3%A9n%20Nacido%20%C2%B7%20AAP%202025%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a1628%22%2C%22theme_color%22%3A%22%230a1628%22%2C%22orientation%22%3A%22portrait%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%3D%2527http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%2527%2520viewBox%3D%270%200%20512%20512%2527%253E%253Crect%2520width%3D%2527512%2527%2520height%3D%2527512%2527%2520rx%3D%2527100%2527%2520fill%3D%2527%25230a1628%2527%2F%253E%253Ctext%2520y%3D%2527.9em%2527%2520font-size%3D%2527400%2527%2520x%3D%252756%2527%253E%25F0%259F%2591%25B6%253C%2F%2520text%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22any%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+
+<!-- ── iOS PWA meta tags ── -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="APGAR">
+<meta name="theme-color" content="#0a1628">
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -27,7 +37,7 @@
     color: var(--white);
     font-family: 'Source Sans 3', sans-serif;
     min-height: 100vh;
-    background-image: 
+    background-image:
       radial-gradient(ellipse at 20% 20%, rgba(30,58,110,0.6) 0%, transparent 60%),
       radial-gradient(ellipse at 80% 80%, rgba(18,32,64,0.8) 0%, transparent 60%);
   }
@@ -732,7 +742,7 @@ function buildSummary() {
   const sumRec = document.getElementById('summary-rec');
   const trend = document.getElementById('trend-analysis');
   grid.innerHTML = '';
-  
+
   const scores = selections.map(sels => {
     const filled = sels.filter(s => s !== null);
     if (filled.length < 5) return null;
@@ -796,6 +806,15 @@ function buildSummary() {
 // Initialize
 [0,1,2].forEach(i => buildCriteria(i));
 buildSummary();
+
+// ── Service Worker ──────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('[APGAR] SW registrado:', reg.scope))
+      .catch(err => console.warn('[APGAR] SW falló:', err));
+  });
+}
 </script>
 </body>
 </html>
